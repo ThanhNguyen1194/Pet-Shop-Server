@@ -1,26 +1,54 @@
-const { User, Product, Cart } = require("../models/index")
+const { Cart, User, Product } = require("../models/index")
 
 const createOrder = async (req, res) => {
-    console.log(req.body)
-    let demo = req.boby
-    console.log(demo)
-    console.log(req.boby)
-    // console.log(user_id, product_id)
-    // const newOrder = await Cart.create({ user_id, product_id })
-    // res.status(201).send(newOrder)
+    const { user_id, product_id } = req.body
+    const newOrder = await Cart.create({ user_id, product_id })
+    res.send(newOrder)
 }
 const getAllOrder = async (req, res) => {
-    const listOrder = await Cart.findAll({
-        // include: [
-        //     {
-        //         model: Station,
-        //         as: "from"
-        //     },
-        // ]
+    const listOrder = await Cart.findAll()
+    res.send(listOrder)
+}
+const getDetailOrder = async (req, res) => {
+    const { id } = req.params
+    const orderFound = await Cart.findOne({
+        where: {
+            id
+        },
+        include: [
+            {
+                model: User,
+            },
+            {
+                model: Product,
+            }
+        ]
     })
-    res.status(200).send(listOrder)
+    if (orderFound) {
+        res.send(orderFound)
+    } else {
+        res.send("not found")
+    }
+}
+const deleteOrder = async (req, res) => {
+    const { id } = req.params
+    const orderFound = await Cart.findOne({
+        where: {
+            id
+        }
+    })
+    if (orderFound) {
+
+        await Cart.destroy({ where: { id } })
+        res.send(`xoá thành công Order với id : ${id}`)
+    } else {
+
+        res.send("not found")
+    }
 }
 module.exports = {
     createOrder,
-    getAllOrder
+    getAllOrder,
+    getDetailOrder,
+    deleteOrder
 }
