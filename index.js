@@ -23,6 +23,7 @@ const publicPathDirectory = path.join(__dirname, "./public")
 app.use("/public", express.static(publicPathDirectory))
 //dùng router
 app.use("/api/v1", rootRouter)
+app.use("/api", (req, res) => { res.send("hello") })
 //lắng nghe kết nối
 app.listen(port, async () => {
     console.log(`App listening on http://localhost:${port}`)
